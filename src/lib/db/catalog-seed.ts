@@ -50,6 +50,14 @@ const P = {
   sand: ["#d9cbb2", "#d9cbb2", "#d9cbb2", "#2b2b2b"],
   olive: ["#4b5320", "#4b5320", "#4b5320", "#e8dfae"],
   steel: ["#8d8d8d", "#c9c9c9", "#5c5c5c", "#2b2b2b"],
+
+  // Colorazioni Spear Jerk 100 — [dorso, ventre, ombra, dettaglio]
+  sjGoldAyu: ["#7a6a24", "#e9cf72", "#2b2410", "#d0392b"],
+  sjBrownTrout: ["#6d5a2f", "#e3d47a", "#2a2113", "#c2352f"],
+  sjRainbowTrout: ["#7c8f3f", "#efe0e6", "#2f3a18", "#e07a9a"],
+  sjChromeOrange: ["#2b2f33", "#dfe3e6", "#0e1113", "#e2661d"],
+  sjBlueBars: ["#2f9ad6", "#e8eef2", "#12405e", "#1c6fa0"],
+  sjPurpleSpot: ["#5b2f9c", "#ded4ee", "#241143", "#8a3fd0"],
 };
 
 const SEED_PRODUCTS: SeedProduct[] = [
@@ -95,23 +103,23 @@ const SEED_PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "naviglio-75",
-    name: "Naviglio 75",
+    slug: "spear-jerk-100",
+    name: "Spear Jerk 100",
     category: "jerkbait",
-    tagline: "Jerkbait slim per recuperi nervosi",
+    tagline: "Jerkbait slim da 10 cm, sei colorazioni",
     description:
-      "Profilo sottile e spalla alta: Naviglio 75 risponde a ogni colpo di cima con una sbandata secca e torna in asse da solo. È l'esca da mettere sul finale quando il pesce segue e non attacca.\n\nDisponibile in colorazioni naturali e in due tinte ad alto contrasto per l'acqua sporca.",
-    priceCents: 2600,
-    lengthMm: 75,
-    weightDg: 75,
+      "Spear Jerk 100 ha un profilo affilato: dieci centimetri di corpo sottile, testa cromata e paletta corta, per un'esca che taglia l'acqua e risponde a ogni colpo di cima.\n\nSei colorazioni disponibili, dalle livree naturali di trota fario, iridea e ayu alle tinte ad alto contrasto per l'acqua torbida o le giornate cupe.\n\n[Da completare: descrizione costruttiva, assetto reale, profondità di lavoro e armamento.]",
+    priceCents: 2900,
+    lengthMm: 100,
     action: "suspending",
-    depthM: "0,3 - 0,9 m",
-    hooks: "2 ancorette inox #8",
     featured: true,
     variants: [
-      { name: "Bleak", palette: P.bleak, stock: 14 },
-      { name: "Chartreuse", palette: P.chartreuse, stock: 7 },
-      { name: "Gold Trout", palette: P.goldTrout, stock: 6 },
+      { name: "Gold Ayu", palette: P.sjGoldAyu, stock: 6 },
+      { name: "Brown Trout", palette: P.sjBrownTrout, stock: 6 },
+      { name: "Rainbow Trout", palette: P.sjRainbowTrout, stock: 6 },
+      { name: "Chrome Orange", palette: P.sjChromeOrange, stock: 6 },
+      { name: "Blue Bars", palette: P.sjBlueBars, stock: 6 },
+      { name: "Purple Spot", palette: P.sjPurpleSpot, stock: 6 },
     ],
   },
   {
@@ -297,7 +305,7 @@ export async function seedCatalog({ replace = false } = {}): Promise<SeedResult>
         id: `var_${p.slug.replace(/-/g, "_")}_${vi}`,
         productId,
         name: v.name,
-        sku: `${p.slug.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10)}-${String(vi + 1).padStart(2, "0")}`,
+        sku: `${p.slug.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12)}-${String(vi + 1).padStart(2, "0")}`,
         priceDeltaCents: 0,
         stock: v.stock ?? 5,
         palette: JSON.stringify(v.palette),
