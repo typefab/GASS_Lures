@@ -11,7 +11,8 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/lib/db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "setup": "npm run db:push && npm run db:seed"
+    "setup": "npm run db:push && npm run db:seed",
+    "db:generate": "drizzle-kit generate && node scripts/build-schema-sql.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/CartProvider";
+import PreviewBanner from "@/components/PreviewBanner";
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       >
         Vai al contenuto
       </a>
+      <PreviewBanner />
       <Header />
       <main id="contenuto">{children}</main>
       <Footer />

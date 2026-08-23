@@ -42,9 +42,12 @@ il checkout passa automaticamente ai pagamenti veri, senza toccare una riga di c
 ```bash
 npm install
 cp .env.example .env.local     # poi apri .env.local e compila i valori
-npm run setup                  # crea le tabelle e carica il catalogo di esempio
 npm run dev                    # http://localhost:3000
 ```
+
+Al primo avvio il database viene creato e riempito da solo con il catalogo di esempio: non
+serve nessun comando aggiuntivo. Se vuoi ripartire da zero, cancella `data/gass.db` e
+riavvia, oppure usa `npm run setup`.
 
 Il pannello di gestione è su http://localhost:3000/admin con la password che hai messo in
 `ADMIN_PASSWORD`.
@@ -56,6 +59,7 @@ Comandi utili:
 | `npm run dev` | Server di sviluppo |
 | `npm run build` / `npm start` | Build e avvio in produzione |
 | `npm run lint` | Controllo del codice |
+| `npm run db:generate` | Rigenera schema SQL e migrazioni dopo aver modificato `schema.ts` |
 | `npm run db:push` | Applica lo schema al database |
 | `npm run db:seed` | Ricarica il catalogo di esempio (**cancella i prodotti**, non gli ordini) |
 | `npm run db:studio` | Interfaccia grafica sul database |
@@ -68,11 +72,11 @@ Tutte descritte in `.env.example`. Le essenziali:
 
 | Variabile | Obbligatoria | A cosa serve |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | sì | URL pubblico del sito, usato nei link delle email e nella sitemap |
-| `DATABASE_URL` | sì | `file:./data/gass.db` in locale, `libsql://…` su Turso in produzione |
-| `DATABASE_AUTH_TOKEN` | in produzione | Token Turso |
-| `ADMIN_PASSWORD` | sì | Password del pannello di gestione |
-| `AUTH_SECRET` | sì | Chiave per firmare il cookie di sessione (`openssl rand -base64 32`) |
+| `ADMIN_PASSWORD` | **sì** | Password del pannello di gestione. È l'unica davvero indispensabile |
+| `DATABASE_URL` | consigliata | `file:./data/gass.db` in locale, `libsql://…` su Turso. Se manca, database temporaneo |
+| `DATABASE_AUTH_TOKEN` | con Turso | Token Turso |
+| `AUTH_SECRET` | consigliata | Chiave per firmare il cookie di sessione (`openssl rand -base64 32`). Se manca, viene ricavata dalla password |
+| `NEXT_PUBLIC_SITE_URL` | consigliata | URL pubblico del sito, usato nei link delle email e nella sitemap |
 | `STRIPE_SECRET_KEY` | no | Se vuota → modalità dimostrativa |
 | `STRIPE_WEBHOOK_SECRET` | no | Necessaria per incassare davvero |
 | `RESEND_API_KEY` | no | Se vuota, le email vengono scritte nei log invece che inviate |
@@ -81,7 +85,29 @@ Tutte descritte in `.env.example`. Le essenziali:
 
 ## Pubblicare il sito gratis
 
-### 1. Database — Turso (piano gratuito)
+### Passo unico: metterlo online (circa 3 minuti)
+
+Il sito è pensato per partire **senza configurare niente**. Se non trova un database ne crea
+uno temporaneo, ci carica il catalogo e si avvia in *modalità anteprima*.
+
+1. Vai su [vercel.com/new](https://vercel.com/new) e accedi con GitHub.
+2. Importa il repository **`typefab/GASS_Lures`**.
+3. Apri *Environment Variables* e aggiungi una sola voce:
+   `ADMIN_PASSWORD` = la password che vuoi usare per entrare in `/admin`.
+4. Premi **Deploy** e aspetta un paio di minuti.
+
+Ottieni un indirizzo tipo `gass-lures.vercel.app`, apribile dal telefono. Funziona tutto:
+catalogo, carrello, cassa, pagamento simulato, ordine, pannello di gestione.
+
+In questa modalità il sito mostra in cima una fascia rossa *"Sito in prova"*: è voluta, serve a
+non far credere a nessuno che si tratti di un negozio già attivo. Sparisce da sola appena
+colleghi un database vero.
+
+> **Limite da conoscere:** senza database permanente ordini e modifiche ai prodotti si
+> azzerano quando il server si riavvia (di solito dopo qualche minuto di inattività). Va
+> benissimo per provare, non per vendere.
+
+### Rendere permanenti i dati — Turso (gratuito, ~5 minuti)
 
 ```bash
 curl -sSfL https://get.tur.so/install.sh | bash
@@ -91,26 +117,25 @@ turso db show gass-lures --url          # → DATABASE_URL
 turso db tokens create gass-lures       # → DATABASE_AUTH_TOKEN
 ```
 
-Poi, con quelle due variabili in `.env.local`:
+Aggiungi le due variabili su Vercel (*Settings → Environment Variables*) e rilancia il deploy.
+Le tabelle e il catalogo iniziale vengono creati al primo avvio, da soli.
 
-```bash
-npm run db:push && npm run db:seed
-```
+Già che ci sei, aggiungi anche:
 
-### 2. Hosting — Vercel (piano Hobby, gratuito)
+- `AUTH_SECRET` — genera con `openssl rand -base64 32`. Senza, la sessione del pannello viene
+  firmata con una chiave ricavata dalla password: accettabile per provare, non per il negozio
+  vero. Il pannello te lo ricorda con un avviso.
+- `NEXT_PUBLIC_SITE_URL` — l'indirizzo pubblico del sito, usato nei link delle email e nella sitemap.
 
-1. Fai il push del repository su GitHub.
-2. Su [vercel.com](https://vercel.com) → *Add New Project* → importa il repository.
-3. Inserisci le variabili d'ambiente elencate sopra.
-4. *Deploy*. Ottieni subito un indirizzo tipo `gass-lures.vercel.app`.
+### Prima di incassare davvero
 
-> **Da sapere prima di vendere sul serio.** Il piano Hobby di Vercel è destinato a progetti
-> personali e non commerciali: va benissimo per la fase di collaudo, ma quando inizi a
-> incassare devi passare al piano Pro (circa 20 $/mese) **oppure** spostare l'hosting su una
-> piattaforma il cui piano gratuito consente l'uso commerciale — Cloudflare Workers e Netlify
-> sono le alternative più immediate. Il codice non cambia: cambia solo dove gira.
+> Il piano Hobby di Vercel è destinato a progetti personali e non commerciali: va benissimo per
+> la fase di collaudo, ma quando inizi a incassare devi passare al piano Pro (circa 20 $/mese)
+> **oppure** spostare l'hosting su una piattaforma il cui piano gratuito consente l'uso
+> commerciale — Cloudflare Workers e Netlify sono le alternative più immediate. Il codice non
+> cambia: cambia solo dove gira.
 
-### 3. Dominio
+### Dominio
 
 Per non spendere nulla adesso puoi usare il sottodominio gratuito dell'hosting
 (`gass-lures.vercel.app`) e collegare più avanti un dominio tuo: su Vercel si aggiunge da
@@ -118,7 +143,7 @@ Per non spendere nulla adesso puoi usare il sottodominio gratuito dell'hosting
 stanno intorno ai 10-15 € l'anno). Quando lo fai, aggiorna `NEXT_PUBLIC_SITE_URL` e l'URL del
 webhook Stripe.
 
-### 4. Pagamenti — Stripe
+### Pagamenti — Stripe
 
 Aprire un account Stripe è gratuito; si paga solo una commissione sulle transazioni riuscite.
 
@@ -130,7 +155,9 @@ Aprire un account Stripe è gratuito; si paga solo una commissione sulle transaz
 5. Quando è tutto verificato, completa l'attivazione dell'account e sostituisci le chiavi di
    test con quelle live.
 
-### 5. Email (facoltativo)
+Appena `STRIPE_SECRET_KEY` è presente, il gateway di prova si disattiva da solo.
+
+### Email (facoltativo)
 
 Senza `RESEND_API_KEY` le email di conferma vengono solo scritte nei log del server: comodo
 per collaudare, inutile per i clienti veri. Per attivarle davvero: account su
@@ -159,6 +186,8 @@ sostituire le immagini una alla volta, senza mai lasciare buchi nella vetrina.
 - Il carrello vive in `localStorage` ed è letto con `useSyncExternalStore`, quindi non c'è
   disallineamento fra HTML del server e prima renderizzazione nel browser
 - L'area `/admin` è protetta dal middleware **e** da un controllo dentro ogni azione server
+- All'avvio (`src/instrumentation.ts`) il server crea le tabelle mancanti e carica il catalogo
+  se il database è vuoto; lo schema SQL è incorporato nel bundle, non letto dal disco
 - `npm audit` segnala 4 avvisi *moderate* su `drizzle-kit`: riguardano il server di sviluppo
   di esbuild, che non viene mai eseguito in produzione
 

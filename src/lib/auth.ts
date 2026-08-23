@@ -6,14 +6,31 @@
 export const COOKIE_NAME = "gass_admin";
 export const MAX_AGE_SECONDS = 60 * 60 * 12; // 12 ore
 
+/**
+ * Chiave usata per firmare il cookie di sessione.
+ *
+ * Se AUTH_SECRET non è impostata la ricaviamo dalla password di amministrazione:
+ * così il sito funziona anche con la configurazione minima del primo deploy.
+ * È una soluzione di ripiego — la sicurezza del cookie scende al livello della
+ * password — quindi il pannello lo segnala e va sistemata prima di vendere.
+ */
 function secret() {
-  const value = process.env.AUTH_SECRET;
-  if (!value || value.length < 16) {
-    throw new Error(
-      "AUTH_SECRET mancante o troppo corta: impostala nelle variabili d'ambiente (almeno 16 caratteri).",
-    );
-  }
-  return value;
+  const explicit = process.env.AUTH_SECRET;
+  if (explicit && explicit.length >= 16) return explicit;
+
+  const password = process.env.ADMIN_PASSWORD;
+  if (password && password.length >= 8) return `gass-lures:chiave-derivata:${password}`;
+
+  throw new Error(
+    "AUTH_SECRET mancante: impostala nelle variabili d'ambiente (almeno 16 caratteri), " +
+      "oppure imposta una ADMIN_PASSWORD di almeno 8 caratteri.",
+  );
+}
+
+/** true quando la chiave di firma è ricavata dalla password invece che impostata a parte. */
+export function isDerivedAuthSecret() {
+  const explicit = process.env.AUTH_SECRET;
+  return !(explicit && explicit.length >= 16);
 }
 
 function b64url(bytes: Uint8Array) {

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { and, desc, eq, lte, sql } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { db, isPreviewDatabase } from "@/lib/db";
 import { messages, newsletter, orders, products, variants } from "@/lib/db/schema";
 import { formatDate, formatPrice } from "@/lib/format";
 import { ORDER_STATUS } from "@/lib/order-status";
 import { isPaymentsLive } from "@/lib/stripe";
+import { isDerivedAuthSecret } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,24 @@ export default async function AdminHome() {
   return (
     <div>
       <h1 className="h-display text-3xl">Riepilogo</h1>
+
+      {isPreviewDatabase && (
+        <p className="mt-4 rounded-lg border border-rust/50 bg-rust/10 p-4 text-sm">
+          <strong className="text-rust">Database temporaneo.</strong> Il sito gira senza database
+          permanente: ordini, prodotti e messaggi si azzerano quando il server si riavvia. Imposta{" "}
+          <code className="font-mono">DATABASE_URL</code> e <code className="font-mono">DATABASE_AUTH_TOKEN</code>{" "}
+          (Turso, gratuito) per conservare tutto.
+        </p>
+      )}
+
+      {isDerivedAuthSecret() && (
+        <p className="mt-4 rounded-lg border border-brass/50 bg-brass/10 p-4 text-sm">
+          <strong className="text-brass">Chiave di firma provvisoria.</strong> Manca{" "}
+          <code className="font-mono">AUTH_SECRET</code>: la sessione è firmata con una chiave ricavata
+          dalla password. Va bene per provare, non per il negozio vero — genera una chiave con{" "}
+          <code className="font-mono">openssl rand -base64 32</code> e impostala fra le variabili d&apos;ambiente.
+        </p>
+      )}
 
       {!isPaymentsLive() && (
         <p className="mt-4 rounded-lg border border-brass/50 bg-brass/10 p-4 text-sm">

@@ -22,7 +22,9 @@ Sono nel file `src/lib/site.ts` e nelle pagine legali: adesso ci sono segnaposto
 ## 2. Account da aprire (gratuiti, li apri tu perché sono intestati a te)
 
 - [ ] **GitHub** — per ospitare il codice (già fatto se stai leggendo questo file lì)
-- [ ] **Turso** — database, piano gratuito: mi servono `DATABASE_URL` e `DATABASE_AUTH_TOKEN`
+- [ ] **Turso** — database, piano gratuito: mi servono `DATABASE_URL` e `DATABASE_AUTH_TOKEN`.
+      Non serve per la prima pubblicazione (il sito parte con un database temporaneo),
+      serve appena vuoi che ordini e prodotti restino salvati
 - [ ] **Vercel** (o Cloudflare/Netlify) — hosting, collegato al repository GitHub
 - [ ] **Stripe** — pagamenti. Aprirlo è gratis, si paga solo la commissione sugli incassi.
       Per l'attivazione servono i tuoi dati fiscali e un IBAN.
@@ -61,6 +63,7 @@ Il codice è pronto, ma vendere online in Italia richiede anche:
 | Email di conferma ordine | Scritte nei log del server | Chiave Resend |
 | Email al negozio per nuovo ordine | Scritte nei log del server | Chiave Resend |
 | Foto prodotto | Illustrazioni vettoriali generate dai colori | Carichi le foto vere |
+| Salvataggio permanente dei dati | Database temporaneo che si azzera | `DATABASE_URL` + `DATABASE_AUTH_TOKEN` di Turso |
 | Recensioni in home | Testi di esempio | Le sostituiamo con recensioni reali |
 | Tracciamento spedizione | Campo libero compilato a mano in `/admin` | Va bene così, oppure integriamo il corriere |
 
