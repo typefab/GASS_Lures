@@ -1,5 +1,6 @@
 import Link from "next/link";
-import LureArt, { kindFromCategory } from "./LureArt";
+import { kindFromCategory } from "./LureArt";
+import VariantThumb from "./VariantThumb";
 import { formatPrice, formatLength, formatWeight } from "@/lib/format";
 import type { Product, Variant } from "@/lib/db/schema";
 
@@ -22,17 +23,14 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       className="group flex flex-col overflow-hidden rounded-lg border border-line bg-ink-2 transition-colors hover:border-brass/60"
     >
       <div className="relative aspect-4/3 overflow-hidden bg-ink-3">
-        {first?.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={first.imageUrl} alt={product.name} className="h-full w-full object-cover" />
-        ) : (
-          <LureArt
-            palette={first?.palette}
-            kind={kind}
-            uid={first?.id ?? product.id}
-            className="h-full w-full p-4 transition-transform duration-500 group-hover:scale-105"
-          />
-        )}
+        <VariantThumb
+          imageUrl={first?.imageUrl}
+          palette={first?.palette}
+          kind={kind}
+          uid={first?.id ?? product.id}
+          alt={product.name}
+          className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+        />
 
         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {onSale && !soldOut && (

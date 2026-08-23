@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
-import LureArt from "./LureArt";
+import VariantThumb from "./VariantThumb";
 import { formatPrice } from "@/lib/format";
 import { site } from "@/lib/site";
 
@@ -195,7 +195,14 @@ export default function CheckoutForm({ paymentsLive, testMode, cancelled }: Prop
           {lines.map((l) => (
             <li key={l.variantId} className="flex items-center gap-3">
               <div className="w-14 shrink-0 rounded border border-line bg-ink p-1">
-                <LureArt palette={l.palette} kind={l.kind as never} uid={l.variantId} className="w-full" />
+                <VariantThumb
+                  imageUrl={l.imageUrl}
+                  palette={l.palette}
+                  kind={l.kind}
+                  uid={l.variantId}
+                  alt={`${l.productName} — ${l.variantName}`}
+                  className="w-full"
+                />
               </div>
               <div className="min-w-0 flex-1 text-sm">
                 <p className="truncate font-semibold">{l.productName}</p>

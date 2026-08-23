@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import LureArt from "@/components/LureArt";
+import VariantThumb from "@/components/VariantThumb";
 import { useCart } from "@/components/CartProvider";
 import { formatPrice } from "@/lib/format";
 import { site } from "@/lib/site";
@@ -83,7 +83,14 @@ export default function CartPage() {
           {lines.map((line) => (
             <li key={line.variantId} className="flex gap-4 p-4">
               <div className="w-24 shrink-0 rounded-md border border-line bg-ink-2 p-1.5 sm:w-32">
-                <LureArt palette={line.palette} kind={line.kind as never} uid={line.variantId} className="w-full" />
+                <VariantThumb
+                  imageUrl={line.imageUrl}
+                  palette={line.palette}
+                  kind={line.kind}
+                  uid={line.variantId}
+                  alt={`${line.productName} — ${line.variantName}`}
+                  className="w-full"
+                />
               </div>
 
               <div className="min-w-0 flex-1">

@@ -9,6 +9,8 @@ export type CartLine = {
   variantName: string;
   priceCents: number;
   palette: string;
+  /** Foto della colorazione, se il prodotto ne ha una. */
+  imageUrl?: string;
   kind: string;
   quantity: number;
   maxQuantity: number;

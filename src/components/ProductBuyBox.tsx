@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import LureArt from "./LureArt";
+import VariantThumb from "./VariantThumb";
 import { useCart } from "./CartProvider";
 import { formatPrice } from "@/lib/format";
 
@@ -52,6 +52,7 @@ export default function ProductBuyBox({ productSlug, productName, kind, variants
         variantName: selected.name,
         priceCents: selected.priceCents,
         palette: selected.palette,
+        imageUrl: selected.imageUrl,
         kind,
         maxQuantity: selected.stock,
       },
@@ -64,18 +65,14 @@ export default function ProductBuyBox({ productSlug, productName, kind, variants
       {/* Anteprima della colorazione selezionata */}
       <div>
         <div className="overflow-hidden rounded-xl border border-line bg-ink-2 p-6">
-          {selected.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={selected.imageUrl} alt={`${productName} — ${selected.name}`} className="w-full rounded-lg" />
-          ) : (
-            <LureArt
-              palette={selected.palette}
-              kind={kind as never}
-              uid={selected.id}
-              className="w-full"
-              label={`${productName} nella colorazione ${selected.name}`}
-            />
-          )}
+          <VariantThumb
+            imageUrl={selected.imageUrl}
+            palette={selected.palette}
+            kind={kind}
+            uid={selected.id}
+            alt={`${productName} nella colorazione ${selected.name}`}
+            className="w-full rounded-lg"
+          />
         </div>
         <div className="mt-3 grid grid-cols-4 gap-3 sm:grid-cols-6">
           {variants.map((v) => (
@@ -92,7 +89,14 @@ export default function ProductBuyBox({ productSlug, productName, kind, variants
                 v.id === selected.id ? "border-brass" : "border-line hover:border-bone-dim"
               } ${v.stock <= 0 ? "opacity-50" : ""}`}
             >
-              <LureArt palette={v.palette} kind={kind as never} uid={v.id} className="w-full" />
+              <VariantThumb
+                imageUrl={v.imageUrl}
+                palette={v.palette}
+                kind={kind}
+                uid={v.id}
+                alt={v.name}
+                className="w-full"
+              />
               <span className="sr-only">{v.name}</span>
             </button>
           ))}

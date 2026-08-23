@@ -1,5 +1,6 @@
 import { deleteVariant, saveVariant } from "@/app/admin/actions";
-import LureArt, { parsePalette } from "@/components/LureArt";
+import { parsePalette } from "@/components/LureArt";
+import VariantThumb from "@/components/VariantThumb";
 import type { Variant } from "@/lib/db/schema";
 
 type Props = { productId: string; kind: string; variants: Variant[] };
@@ -25,7 +26,14 @@ function VariantRow({ productId, kind, variant }: { productId: string; kind: str
 
       <div className="flex flex-wrap gap-4">
         <div className="w-28 shrink-0 rounded border border-line bg-ink p-1.5">
-          <LureArt palette={palette} kind={kind as never} uid={variant?.id ?? `new-${productId}`} className="w-full" />
+          <VariantThumb
+            imageUrl={variant?.imageUrl}
+            palette={palette}
+            kind={kind}
+            uid={variant?.id ?? `new-${productId}`}
+            alt={variant?.name ?? "nuova colorazione"}
+            className="w-full"
+          />
         </div>
 
         <form action={saveVariant} className="min-w-0 flex-1 space-y-3">

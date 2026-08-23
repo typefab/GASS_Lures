@@ -6,7 +6,7 @@ import { categories, products, variants } from "./schema";
  * Viene caricato dal comando `npm run db:seed` e, automaticamente, la prima
  * volta che il sito parte su un database ancora vuoto.
  */
-type SeedVariant = { name: string; palette: string[]; stock?: number };
+type SeedVariant = { name: string; palette: string[]; stock?: number; image?: string };
 type SeedProduct = {
   slug: string;
   name: string;
@@ -114,12 +114,12 @@ const SEED_PRODUCTS: SeedProduct[] = [
     action: "suspending",
     featured: true,
     variants: [
-      { name: "Gold Ayu", palette: P.sjGoldAyu, stock: 6 },
-      { name: "Brown Trout", palette: P.sjBrownTrout, stock: 6 },
-      { name: "Rainbow Trout", palette: P.sjRainbowTrout, stock: 6 },
-      { name: "Chrome Orange", palette: P.sjChromeOrange, stock: 6 },
-      { name: "Blue Bars", palette: P.sjBlueBars, stock: 6 },
-      { name: "Purple Spot", palette: P.sjPurpleSpot, stock: 6 },
+      { name: "Gold Ayu", palette: P.sjGoldAyu, stock: 6, image: "/prodotti/spear-jerk-100-gold-ayu.png" },
+      { name: "Brown Trout", palette: P.sjBrownTrout, stock: 6, image: "/prodotti/spear-jerk-100-brown-trout.png" },
+      { name: "Rainbow Trout", palette: P.sjRainbowTrout, stock: 6, image: "/prodotti/spear-jerk-100-rainbow-trout.png" },
+      { name: "Chrome Orange", palette: P.sjChromeOrange, stock: 6, image: "/prodotti/spear-jerk-100-chrome-orange.png" },
+      { name: "Blue Bars", palette: P.sjBlueBars, stock: 6, image: "/prodotti/spear-jerk-100-blue-bars.png" },
+      { name: "Purple Spot", palette: P.sjPurpleSpot, stock: 6, image: "/prodotti/spear-jerk-100-purple-spot.png" },
     ],
   },
   {
@@ -309,6 +309,7 @@ export async function seedCatalog({ replace = false } = {}): Promise<SeedResult>
         priceDeltaCents: 0,
         stock: v.stock ?? 5,
         palette: JSON.stringify(v.palette),
+        imageUrl: v.image ?? "",
         active: true,
         sort: vi,
       });

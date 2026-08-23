@@ -3,7 +3,8 @@ import { asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, products, variants } from "@/lib/db/schema";
 import { formatPrice } from "@/lib/format";
-import LureArt, { kindFromCategory } from "@/components/LureArt";
+import { kindFromCategory } from "@/components/LureArt";
+import VariantThumb from "@/components/VariantThumb";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +36,12 @@ export default async function AdminProductsPage() {
             <li key={product.id}>
               <Link href={`/admin/prodotti/${product.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-ink-2">
                 <div className="w-16 shrink-0 rounded border border-line bg-ink-2 p-1">
-                  <LureArt
+                  <VariantThumb
+                    imageUrl={vs[0]?.imageUrl}
                     palette={vs[0]?.palette}
                     kind={kindFromCategory(categorySlug)}
                     uid={vs[0]?.id ?? product.id}
+                    alt={product.name}
                     className="w-full"
                   />
                 </div>
