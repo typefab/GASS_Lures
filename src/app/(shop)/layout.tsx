@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/CartProvider";
 import PreviewBanner from "@/components/PreviewBanner";
+import PrivacyNotice from "@/components/PrivacyNotice";
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       <Header />
       <main id="contenuto">{children}</main>
       <Footer />
+      <PrivacyNotice />
     </CartProvider>
   );
 }
