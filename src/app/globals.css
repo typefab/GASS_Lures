@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0c0e0d;
+  --color-ink-2: #14181a;
+  --color-ink-3: #1d2225;
+  --color-line: #2b3235;
+  --color-bone: #f3f0e7;
+  --color-bone-dim: #a9a89f;
+  --color-brass: #c8a24a;
+  --color-brass-soft: #e0c17f;
+  --color-moss: #5b6b32;
+  --color-rust: #b4532a;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-heading), "Impact", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Trama sottile "carta ruvida" sullo sfondo */
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.h-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+/* Etichetta piccola maiuscola usata sopra i titoli di sezione */
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-brass);
+  font-weight: 600;
+}
+
+.hairline {
+  border-color: color-mix(in srgb, var(--color-line) 100%, transparent);
+}
+
+/* Focus visibile e coerente su tutti gli elementi interattivi */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
